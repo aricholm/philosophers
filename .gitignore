@@ -1,0 +1,4 @@
+*.out
+*.o
+philo
+philo_bonus

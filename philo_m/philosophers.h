@@ -6,7 +6,7 @@
 /*   By: aricholm <aricholm@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 11:27:49 by aricholm          #+#    #+#             */
-/*   Updated: 2021/11/22 12:42:05 by aricholm         ###   ########.fr       */
+/*   Updated: 2021/12/03 19:36:53 by aricholm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <pthread.h>
 
 typedef enum e_bool{FALSE, TRUE}	t_bool;
-typedef enum e_state{STANDBY, EAT, SLEEP, THINK, FORK, WIN, DEAD}	t_state;
+typedef enum e_state{EAT, SLEEP, THINK, FORK, WIN, DEAD}	t_state;
 
 typedef struct s_queue{
 	unsigned int	philosopher;
@@ -30,12 +30,11 @@ typedef struct s_queue{
 typedef struct s_philosopher{
 	size_t					id;
 	pthread_t				thread;
-	t_state					state;
 	unsigned int			times_eaten;
+	unsigned long int		will_die;
 	struct s_setup			*setup;
 	struct s_philosopher	*next;
 	pthread_mutex_t			m_fork;
-	t_bool					fork;
 }	t_philosopher;
 
 typedef struct s_setup{
@@ -44,13 +43,20 @@ typedef struct s_setup{
 	unsigned int		time_to_eat;
 	unsigned int		time_to_sleep;
 	unsigned int		times_to_eat;
-	t_queue				*next;
 	unsigned long int	start;
 	t_philosopher		*last;
-	pthread_mutex_t		*m_write;
-	t_bool				ready;
+	pthread_mutex_t		m_write;
+	pthread_mutex_t		m_ready;
+	volatile t_bool		game_over;
 }	t_setup;
 
+int					get_data(t_setup *setup, int argc, const char *argv[]);
 unsigned long int	get_time(void);
+void				link_first_to_last(t_setup *setup);
 void				print_status(t_philosopher *philo, t_state state);
+void				philo_think(t_philosopher *philo);
+void				philo_sleep(t_philosopher *philo);
+void				philo_eat(t_philosopher *philo);
+void				shut_it_down(t_setup *setup);
+void				monitor_death(t_setup *setup);
 #endif
