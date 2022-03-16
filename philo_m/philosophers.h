@@ -6,7 +6,7 @@
 /*   By: aricholm <aricholm@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 11:27:49 by aricholm          #+#    #+#             */
-/*   Updated: 2021/12/03 19:36:53 by aricholm         ###   ########.fr       */
+/*   Updated: 2022/03/16 13:50:52 by aricholm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ typedef struct s_setup{
 	unsigned long int	start;
 	t_philosopher		*last;
 	pthread_mutex_t		m_write;
-	pthread_mutex_t		m_ready;
+	pthread_mutex_t		m_check;
 	volatile t_bool		game_over;
 }	t_setup;
 
@@ -59,4 +59,5 @@ void				philo_sleep(t_philosopher *philo);
 void				philo_eat(t_philosopher *philo);
 void				shut_it_down(t_setup *setup);
 void				monitor_death(t_setup *setup);
+t_bool				is_gameover(t_setup *setup);
 #endif

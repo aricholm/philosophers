@@ -6,7 +6,7 @@
 /*   By: aricholm <aricholm@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 11:27:26 by aricholm          #+#    #+#             */
-/*   Updated: 2021/12/11 16:26:16 by aricholm         ###   ########.fr       */
+/*   Updated: 2022/03/16 14:35:56 by aricholm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,14 @@ static void	*philosopher(void *philosopher)
 
 	philo = (t_philosopher *) philosopher;
 	setup = philo->setup;
-	pthread_mutex_lock(&setup->m_ready);
-	pthread_mutex_unlock(&setup->m_ready);
 	if (philo->id % 2)
 		usleep(philo->setup->time_to_eat * 1000);
-	while (!setup->game_over)
+	while (!is_gameover(setup))
 	{
 		philo_eat(philo);
-		philo_sleep(philo);
-		philo_think(philo);
+		print_status(philo, SLEEP);
+		usleep(philo->setup->time_to_sleep * 1000);
+		print_status(philo, THINK);
 	}
 	return (NULL);
 }
@@ -51,19 +50,20 @@ static void	init_philosopher(t_setup *setup)
 	philo->setup = setup;
 	pthread_mutex_init(&philo->m_fork, NULL);
 	pthread_create(&philo->thread, NULL, philosopher, philo);
+	pthread_mutex_lock(&setup->m_check);
 	philo->will_die = get_time() + setup->time_to_die;
+	pthread_mutex_unlock(&setup->m_check);
 }
 
 static void	initialize(t_setup *setup)
 {
 	size_t			i;
 
-	setup->game_over = FALSE;
 	setup->start = get_time();
 	setup->last = NULL;
 	pthread_mutex_init(&setup->m_write, NULL);
-	pthread_mutex_init(&setup->m_ready, NULL);
-	pthread_mutex_lock(&setup->m_ready);
+	pthread_mutex_init(&setup->m_check, NULL);
+	setup->game_over = FALSE;
 	i = 0;
 	while (i < setup->max_philo)
 	{
@@ -71,7 +71,6 @@ static void	initialize(t_setup *setup)
 		i++;
 	}
 	link_first_to_last(setup);
-	pthread_mutex_unlock(&setup->m_ready);
 }
 
 int	main(int argc, const char *argv[])

@@ -6,7 +6,7 @@
 /*   By: aricholm <aricholm@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 16:29:50 by aricholm          #+#    #+#             */
-/*   Updated: 2021/12/11 15:39:46 by aricholm         ###   ########.fr       */
+/*   Updated: 2022/03/16 14:36:02 by aricholm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	shut_it_down(t_setup *setup)
 	t_philosopher	*kill;
 
 	tmp = setup->last->next;
-	pthread_mutex_destroy(&setup->last->m_fork);
 	pthread_join(setup->last->thread, NULL);
 	while (tmp != setup->last)
 	{
@@ -36,6 +35,7 @@ void	shut_it_down(t_setup *setup)
 		tmp = tmp->next;
 	}
 	tmp = tmp->next;
+	pthread_mutex_destroy(&setup->last->m_fork);
 	free (setup->last);
 	while (tmp != setup->last)
 	{
@@ -45,7 +45,7 @@ void	shut_it_down(t_setup *setup)
 		free (kill);
 	}
 	pthread_mutex_destroy(&setup->m_write);
-	pthread_mutex_destroy(&setup->m_ready);
+	pthread_mutex_destroy(&setup->m_check);
 }
 
 unsigned long int	get_time(void)
@@ -76,13 +76,14 @@ static char	*get_string(t_state state)
 void	print_status(t_philosopher *philo, t_state state)
 {
 	pthread_mutex_lock(&philo->setup->m_write);
-	if (!philo->setup->game_over)
+	if (!is_gameover(philo->setup))
 		printf("%08ld: %ld %s\n", get_time() - philo->setup->start,
 			philo->id, get_string(state));
 	if (state == DEAD)
 	{
+		pthread_mutex_lock(&philo->setup->m_check);
 		philo->setup->game_over = TRUE;
-		pthread_mutex_unlock(&philo->m_fork);
+		pthread_mutex_unlock(&philo->setup->m_check);
 	}
 	pthread_mutex_unlock(&philo->setup->m_write);
 }
