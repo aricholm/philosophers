@@ -6,7 +6,7 @@
 #    By: aricholm <aricholm@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/10 15:03:55 by aricholm          #+#    #+#              #
-#    Updated: 2021/12/11 16:32:08 by aricholm         ###   ########.fr        #
+#    Updated: 2022/03/16 17:04:14 by aricholm         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,10 +28,10 @@ all: $(NAME)
 bonus: $(BONUS)
 
 $(NAME): $(OBJ_MANDATORY)
-	$(CC) -o $(NAME) $(OBJ_MANDATORY) -lpthread
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ_MANDATORY) -lpthread
 
 $(BONUS): $(OBJ_BONUS)
-	$(CC) -o $(BONUS) $(OBJ_BONUS) -lpthread
+	$(CC) $(CFLAGS) -o $(BONUS) $(OBJ_BONUS) -lpthread
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) -o $@ $<

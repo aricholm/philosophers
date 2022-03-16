@@ -6,7 +6,7 @@
 /*   By: aricholm <aricholm@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 11:27:26 by aricholm          #+#    #+#             */
-/*   Updated: 2022/03/16 14:35:56 by aricholm         ###   ########.fr       */
+/*   Updated: 2022/03/16 17:03:14 by aricholm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@ static void	*philosopher(void *philosopher)
 
 	philo = (t_philosopher *) philosopher;
 	setup = philo->setup;
+	if (setup->max_philo == 1)
+	{
+		print_status(philo, FORK);
+		usleep(setup->time_to_die * 1000);
+		print_status(philo, DEAD);
+		return (NULL);
+	}
 	if (philo->id % 2)
 		usleep(philo->setup->time_to_eat * 1000);
 	while (!is_gameover(setup))
