@@ -6,7 +6,7 @@
 /*   By: aricholm <aricholm@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 16:29:50 by aricholm          #+#    #+#             */
-/*   Updated: 2022/03/16 14:36:02 by aricholm         ###   ########.fr       */
+/*   Updated: 2022/03/16 16:45:37 by aricholm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ void	print_status(t_philosopher *philo, t_state state)
 		pthread_mutex_lock(&philo->setup->m_check);
 		philo->setup->game_over = TRUE;
 		pthread_mutex_unlock(&philo->setup->m_check);
+		if (philo->setup->max_philo == 1)
+			pthread_mutex_unlock(&philo->m_fork);
 	}
 	pthread_mutex_unlock(&philo->setup->m_write);
 }
