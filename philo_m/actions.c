@@ -6,7 +6,7 @@
 /*   By: aricholm <aricholm@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 12:37:35 by aricholm          #+#    #+#             */
-/*   Updated: 2022/03/16 16:58:17 by aricholm         ###   ########.fr       */
+/*   Updated: 2022/03/17 08:49:10 by aricholm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,12 @@ void	philo_eat(t_philosopher *philo)
 	pthread_mutex_t	*second;
 
 	first = &philo->m_fork;
-	second = &philo->next->m_fork;
+	second = &philo->next->m_fork; /*
 	if (philo->id % 2)
 	{
 		second = &philo->m_fork;
 		first = &philo->next->m_fork;
-	}
+	} */
 	pthread_mutex_lock(first);
 	print_status(philo, FORK);
 	pthread_mutex_lock(second);
